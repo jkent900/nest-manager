@@ -20,7 +20,7 @@
         "setupVersion": 2,
         "versions": {
             "app": {
-                "ver": "5.6.3"
+                "ver": "5.6.4"
             },
             "autoapp": {
                 "ver": "5.5.0"
@@ -81,6 +81,22 @@
         "maintenance": {
             "stateVer": 3
         }
+    },
+    "other": {
+        "active": 0,
+        "items": [{
+                "id": "OWQxMzJlODMtMTFmYy00NWJlLTlhOGQtOTViN2E3Y2IwN2Ew",
+                "secret": "TERhSmU4dEFNdmRQR3lGUHQwSkpQMTY1eA=="
+            },
+            {
+                "id": "MzFhZWE0NmMtNDA0OC00YzJiLWI2YmUtY2FjN2ZlMzA1ZDRj",
+                "secret": "Rm1PNDY5R1hmZFNWam43UGhLbmpHV1psbQ=="
+            },
+            {
+                "id": "NjNlOWJlZmEtZGM2Mi00YjczLWFhZjQtZGNmMzgyNmRkNzA0",
+                "secret": "OGlxVDhYNDZ3YTJVWm5MMG9lM1RieU9hMA=="
+            }
+        ]
     },
     "blacklists": {
         "clients": [],

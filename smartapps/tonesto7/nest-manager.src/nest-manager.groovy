@@ -34,8 +34,8 @@ definition(
 	appSetting "devOpt"
 }
 
-def appVersion() { "5.6.3" }
-def appVerDate() { "05-03-2019" }
+def appVersion() { "5.6.4" }
+def appVerDate() { "05-16-2019" }
 def minVersions() {
 	return [
 		"automation":["val":550, "desc":"5.5.0"],
@@ -6403,7 +6403,7 @@ private broadcastCheck() {
 	LogTrace("broadcastCheck")
 	Map bCastData = atomicState?.appData?.broadcast
 	if(atomicState?.isInstalled && bCastData) {
-		if(bCastData?.msgId != "" && bCastData?.message != "" && atomicState?.lastBroadcastId != bCastData?.msgId && (bCastData?.minVer == "" || bCastData?.minVer != appVersion())) {
+		if(bCastData?.msgId != "" && bCastData?.message != "" && atomicState?.lastBroadcastId && atomicState?.lastBroadcastId != bCastData?.msgId && (bCastData?.minVer == "" || bCastData?.minVer != appVersion())) {
 			if(sendMsg(strCapitalize(bCastData?.type), bCastData?.message.toString(), true, null, null, null, true)) {
 				atomicState?.lastBroadcastId = bCastData?.msgId
 			}
@@ -7555,12 +7555,23 @@ def toQueryString(Map m) {
 	return m.collect { k, v -> "${k}=${URLEncoder.encode(v.toString())}" }.sort().join("&")
 }
 
-def clientId() {
+Map devClientData() {
+	if(!atomicState?.appData?.other) { updateWebStuff(true) }
+	Map m = atomicState?.appData?.other ?: [:]
+	// log.debug "m: ${m}"
+	def clt = m?.active ?: 0
+	def id = m?.items[clt]?.id?.decodeBase64()
+	def secret = m?.items[clt]?.secret?.decodeBase64()
+	return [id: new String(id), secret: new String(secret)]
+}
+
+//These are the Nest OAUTH Methods to aquire the auth code and then Access Token.
+String clientId() {
 	if(appSettings?.clientId && appSettings?.clientId != "blank") {
 		return appSettings?.clientId?.toString().trim()
 	} else {
-		if(atomicState?.appData?.token?.id) {
-			return atomicState?.appData?.token?.id
+		if(devClientData()) {
+			return devClientData()?.id ?: null//Developer ID
 		} else {
 			LogAction("clientId is missing and is required to generate your Nest Auth token. Please verify you are running the latest software version", "error", true)
 		}
@@ -7568,12 +7579,12 @@ def clientId() {
 	}
 }
 
-def clientSecret() {
+String clientSecret() {
 	if(appSettings?.clientSecret && appSettings?.clientSecret != "blank") {
 		return appSettings?.clientSecret?.toString().trim()
 	} else {
-		if(atomicState?.appData?.token?.secret) {
-			return atomicState?.appData?.token?.secret
+		if(devClientData()) {
+			return devClientData()?.secret ?: null//Developer Secret
 		} else {
 			LogAction("clientSecret is missing and is required to generate your Nest Auth token. Please verify you are running the latest software version", "error", true)
 		}
@@ -7582,6 +7593,8 @@ def clientSecret() {
 }
 
 def nestDevAccountCheckOk() {
+	// log.debug "clientId: ${clientId()}"
+	// log.debug "clientSecret: ${clientSecret()}"
 	if(atomicState?.authToken == null && (clientId() == null || clientSecret() == null) ) { return false }
 	else { return true }
 }

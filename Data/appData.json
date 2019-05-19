@@ -24,7 +24,7 @@
         "setupVersion": 2,
         "versions": {
             "app": {
-                "ver": "5.6.3"
+                "ver": "5.6.4"
             },
             "autoapp": {
                 "ver": "5.5.0"
